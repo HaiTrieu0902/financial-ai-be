@@ -1,7 +1,8 @@
+import { Account } from '@/modules/accounts/entities/account.entity';
+import { User } from '@/modules/users/entities/user.entity';
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { User } from '../users/entities/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { User } from '../users/entities/user.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [User],
+        entities: [User, Account],
         synchronize: false, // Don't use in production
         logging: configService.get('NODE_ENV') === 'development',
       }),

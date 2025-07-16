@@ -1,23 +1,12 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  ClassSerializerInterceptor,
-  UseInterceptors,
-} from '@nestjs/common';
-import { UsersService } from './users.service';
+import { CurrentUser } from '@/common/decorators/current-user.decorator';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { User } from './entities/user.entity';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserResponseDto } from './dto/user-response.dto';
+import { User } from './entities/user.entity';
+import { UsersService } from './users.service';
 
 @ApiTags('users')
 @Controller('users')
@@ -64,11 +53,7 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update user' })
   @ApiResponse({ status: 200, description: 'User updated successfully', type: UserResponseDto })
-  async update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-    @CurrentUser() user: User,
-  ): Promise<User> {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @CurrentUser() user: User): Promise<User> {
     return this.usersService.update(id, {
       ...updateUserDto,
       updated_by: user.email || user.username,
